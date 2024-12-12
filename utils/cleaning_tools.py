@@ -49,7 +49,11 @@ def voter(dataframe, strata_column, column_to_check) -> dict:
 
     for value in strata:
         table = dataframe[dataframe[f'{strata_column}'] == f"{value}"].copy()
+        if table.empty:
+            continue
         counts = table[f'{column_to_check}'].value_counts()
+        if counts.empty:
+            continue
         winner = counts.idxmax()
         encoding[value] = winner
     return encoding
@@ -74,3 +78,9 @@ def stratified_median_calculator(dataframe, strata_column, column_to_check) -> d
         median = table[f'{column_to_check}'].median()
         encoding[strata] = median
     return encoding
+
+def stratified_NaN_filler(dataframe, strata_column, value_column, dictionary) -> pd.DataFrame:
+    for stratum, median in dictionary.items():
+        mask = (dataframe[f'{strata_column}'] == stratum) & (dataframe[f'{value_column}'].isna())
+        dataframe.loc[mask, f'{value_column}'] = median
+    return dataframe
