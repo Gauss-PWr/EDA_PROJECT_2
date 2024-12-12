@@ -15,39 +15,62 @@ def remove_trailing_character(value, char_to_remove) -> str:
         return value[:-len(char_to_remove)]
     return value
 
-def voter(dataframe, value_column, column_to_check):
+def remove_leading_character(value, char_to_remove) -> str:
     """
-    Checks if there are multiple records in table corresponding to one unique value,
-    then proceeds to swap values of chosen column into the most popular one among the records
+    Deletes a character of choice from the beginning of a record, if it is present
 
     Args:
-        value(str): a value to be checked
-        dataframe(df): original dataframe
-        value_column(str): original column of 'value' 
-        column_to_check(str): column we want to have unified for one unique value
+        value (str): a value to be checked
+        char_to_remove (str): a character to be removed 
 
     Returns:
-        str: the most popular value among the records
+        str: a record without chosen char at the beginning.
     """
-    df = pd.DataFrame()
+    if isinstance(value, str) and value.startswith(char_to_remove):
+        return value[len(char_to_remove) -1:]
+    return value
 
-    values = dataframe[f'{value_column}'].unique()
-    #print(f"Unique values in '{value_column}': {values}")
+def voter(dataframe, strata_column, column_to_check) -> dict:
+    """
+    Checks if there are multiple records in table corresponding to one unique value,
+    then selects the most popular one among the records and with that,
+    creates a dictionary for each pair.
 
-    for value in values:
-        table = dataframe[dataframe[f'{value_column}'] == f"{value}"].copy()
-        #print(f"Table for value '{value}':")
-        #print(table)
+    Args:
+        dataframe(df): original dataframe
+        value_column(str): original column of strata
+        column_to_check(str): column we want to have unified for strata
 
+    Returns:
+        dict: stratum : the most popular value among the records for unique stratum
+    """
+    encoding = {}
+    strata = dataframe[f'{strata_column}'].unique()
+
+    for value in strata:
+        table = dataframe[dataframe[f'{strata_column}'] == f"{value}"].copy()
         counts = table[f'{column_to_check}'].value_counts()
-        #print(f"Value counts for '{column_to_check}':")
-        #print(counts)
-
         winner = counts.idxmax()
+        encoding[value] = winner
+    return encoding
 
-        table.loc[:, f'{column_to_check} unified'] = winner
-        #print(f"Updated table for value '{value}':")
-        #print(table)
+def stratified_median_calculator(dataframe, strata_column, column_to_check) -> dict:
+    """
+    Computes the median for each individual stratum. Then creates a dictionary with
+    strata and values of each.
 
-        df = pd.concat([df,table], axis=0, ignore_index=True)
-    return df
+    Args:
+        dataframe(df): original dataframe
+        value_column(str): original column of stratum
+        column_to_check(str): column we want to have median calculated for strata
+
+    Returns:
+        dict: stratum : median
+    """
+    encoding = {}
+    strata_list = dataframe[f'{strata_column}'].unique()
+    for strata in strata_list:
+        table = dataframe[dataframe[f'{strata_column}'] == f'{strata}'].copy()
+        median = table[f'{column_to_check}'].median()
+        encoding[strata] = median
+    return encoding
