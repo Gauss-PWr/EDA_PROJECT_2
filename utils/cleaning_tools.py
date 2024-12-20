@@ -48,7 +48,7 @@ def voter(dataframe, strata_column, column_to_check) -> dict:
     encoding = (
             dataframe
             .groupby(strata_column)[column_to_check]
-            .apply(lambda x: x.mode()[0])
+            .apply(lambda x: x.mode()[0] if not x.mode().empty else None)
             .dropna()  # Remove groups with only NaN
             .to_dict()
         )
