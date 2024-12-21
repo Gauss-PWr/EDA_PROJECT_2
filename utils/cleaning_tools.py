@@ -27,7 +27,7 @@ def remove_leading_character(value, char_to_remove) -> str:
         str: a record without chosen char at the beginning.
     """
     if isinstance(value, str) and value.startswith(char_to_remove):
-        return value[len(char_to_remove) -1:]
+        return value[len(char_to_remove):]
     return value
 
 def voter(dataframe, strata_column, column_to_check) -> dict:
