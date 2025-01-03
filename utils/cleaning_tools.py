@@ -85,23 +85,24 @@ def stratified_NaN_filler(dataframe, strata_column, value_column, dictionary) ->
         dataframe.loc[mask, f'{value_column}'] = median
     return dataframe
 
-def occupation_count(df) -> dict:
+def count(column, df) -> dict:
     """
-    Creates dictionary with occupations as keys and number of unique representatives as values
+    Creates dictionary with desired column values as keys and number of unique representatives as values
 
     Args:
+        column(str): column with desired values
         df: original dataframe
     
     Returns:
-        dict: occupation : number of representatives
+        dict: column values : number of representatives
     """
     working_dict = {}
-    for x in df.index: #creates dictionary with occupations as keys and empty sets as values
-        if(df.loc[x, 'Occupation'] not in working_dict.keys()):
-            working_dict[df.loc[x, 'Occupation']] = set()
+    for x in df.index: #creates dictionary with column values as keys and empty sets as values
+        if(df.loc[x, column] not in working_dict.keys()):
+            working_dict[df.loc[x, column]] = set()
     for x in df.index: #adds every customer id to value set
-        working_dict[df.loc[x, 'Occupation']].add(df.loc[x, 'Customer_ID'])
+        working_dict[df.loc[x, column]].add(df.loc[x, 'Customer_ID'])
     final_dict = {}
-    for x in working_dict: #creates dictionary with occupations as keys and number of unique representatives as values
+    for x in working_dict: #creates dictionary with column values as keys and number of unique representatives as values
         final_dict[x] = len(working_dict[x])
     return final_dict
