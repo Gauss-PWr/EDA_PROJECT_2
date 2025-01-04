@@ -105,4 +105,5 @@ def count(column, df) -> dict:
     final_dict = {}
     for x in working_dict: #creates dictionary with column values as keys and number of unique representatives as values
         final_dict[x] = len(working_dict[x])
+    final_dict = {key : final_dict[key] for key in sorted(final_dict)} #alphabetical order
     return final_dict
