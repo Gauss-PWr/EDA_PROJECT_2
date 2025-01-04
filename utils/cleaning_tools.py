@@ -102,7 +102,7 @@ def count(column, df) -> dict:
         if(df.loc[x, column] not in working_dict.keys() and not pd.isna(df.loc[x, column])):
             working_dict[df.loc[x, column]] = set()
     for x in df.index: #adds every customer id to value set
-        if(not pd.isna(df.loc[x, 'Credit_Score'])):
+        if(not pd.isna(df.loc[x, column])):
             working_dict[df.loc[x, column]].add(df.loc[x, 'Customer_ID'])
     final_dict = {}
     for x in working_dict: #creates dictionary with column values as keys and number of unique representatives as values
