@@ -87,7 +87,8 @@ def stratified_NaN_filler(dataframe, strata_column, value_column, dictionary) ->
 
 def count(column, df) -> dict:
     """
-    Creates dictionary with desired column values as keys and number of unique representatives as values
+    Creates dictionary with desired column values as keys and number of unique 
+    representatives as values.
 
     Args:
         column(str): column with desired values
@@ -98,10 +99,11 @@ def count(column, df) -> dict:
     """
     working_dict = {}
     for x in df.index: #creates dictionary with column values as keys and empty sets as values
-        if(df.loc[x, column] not in working_dict.keys()):
+        if(df.loc[x, column] not in working_dict.keys() and not pd.isna(df.loc[x, column])):
             working_dict[df.loc[x, column]] = set()
     for x in df.index: #adds every customer id to value set
-        working_dict[df.loc[x, column]].add(df.loc[x, 'Customer_ID'])
+        if(not pd.isna(df.loc[x, 'Credit_Score'])):
+            working_dict[df.loc[x, column]].add(df.loc[x, 'Customer_ID'])
     final_dict = {}
     for x in working_dict: #creates dictionary with column values as keys and number of unique representatives as values
         final_dict[x] = len(working_dict[x])
