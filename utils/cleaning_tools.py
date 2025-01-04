@@ -107,3 +107,20 @@ def count(column, df) -> dict:
         final_dict[x] = len(working_dict[x])
     final_dict = {key : final_dict[key] for key in sorted(final_dict)} #alphabetical order
     return final_dict
+
+def percentage(dictionary) -> dict:
+    """
+    Creates the same dictionary, but with percentage of the total as values 
+    (instead of number of representatives). 
+
+    Args:
+        dictionary(dict)
+    
+    Returns:
+        dict: column values : percentage of the total
+    """
+    sum_values = sum(dictionary.values())
+    final_dict = {}
+    for x in dictionary:
+        final_dict[x] = round(dictionary[x]/sum_values*100, 2)
+    return final_dict
