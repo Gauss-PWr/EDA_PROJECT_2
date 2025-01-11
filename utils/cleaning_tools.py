@@ -44,18 +44,14 @@ def voter(dataframe, strata_column, column_to_check) -> dict:
     Returns:
         dict: stratum : the most popular value among the records for unique stratum
     """
-    encoding = {}
-    strata = dataframe[f'{strata_column}'].unique()
 
-    for value in strata:
-        table = dataframe[dataframe[f'{strata_column}'] == f"{value}"].copy()
-        if table.empty:
-            continue
-        counts = table[f'{column_to_check}'].value_counts()
-        if counts.empty:
-            continue
-        winner = counts.idxmax()
-        encoding[value] = winner
+    encoding = (
+            dataframe
+            .groupby(strata_column)[column_to_check]
+            .apply(lambda x: x.mode()[0] if not x.mode().empty else None)
+            .dropna()  # Remove groups with only NaN
+            .to_dict()
+        )
     return encoding
 
 def stratified_median_calculator(dataframe, strata_column, column_to_check) -> dict:
@@ -71,12 +67,13 @@ def stratified_median_calculator(dataframe, strata_column, column_to_check) -> d
     Returns:
         dict: stratum : median
     """
-    encoding = {}
-    strata_list = dataframe[f'{strata_column}'].unique()
-    for strata in strata_list:
-        table = dataframe[dataframe[f'{strata_column}'] == f'{strata}'].copy()
-        median = table[f'{column_to_check}'].median()
-        encoding[strata] = median
+    encoding = (
+        dataframe
+        .groupby(strata_column)[column_to_check]
+        .median()
+        .dropna()  # Remove groups with only NaN
+        .to_dict()
+    )
     return encoding
 
 def stratified_NaN_filler(dataframe, strata_column, value_column, dictionary) -> pd.DataFrame:
