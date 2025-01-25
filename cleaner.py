@@ -44,4 +44,6 @@ def cleaning(df):
     for column in numerics:
         df[column] = pd.to_numeric(df[column], errors='coerce')
 
+    df['Credit_Score'] = df["Credit_Score"].fillna("N/A")
+
     return df
