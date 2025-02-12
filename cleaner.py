@@ -45,5 +45,11 @@ def cleaning(df):
         df[column] = pd.to_numeric(df[column], errors='coerce')
 
     df['Credit_Score'] = df["Credit_Score"].fillna("N/A")
+    df['Occupation'] = df['Occupation'].apply(lambda x: "Not Available" if x == "N/A" else x)
+    df['Occupation'] = df['Occupation'].apply(lambda x: "Media Manager" if x == "Media_Manager" else x)
+    df['Credit_Score'] = df['Credit_Score'].apply(lambda x: "Unknown" if x == "N/A" else x)
 
+    
+
+    
     return df
